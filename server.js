@@ -1,15 +1,31 @@
 const http = require("http");
 const fs = require("fs");
+const path = require("path");
 
 const server = http.createServer((req, res) => {
-  fs.readFile("./Index.html", (err, data) => {
+  let filePath = req.url === "/" ? "./Index.html" : "." + req.url;
+
+  const extension = path.extname(filePath);
+
+  const contentTypes = {
+    ".html": "text/html",
+    ".css": "text/css",
+    ".js": "text/javascript",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".svg": "image/svg+xml",
+  };
+
+  const contentType = contentTypes[extension] || "text/plain";
+
+  fs.readFile(filePath, (err, data) => {
     if (err) {
-      res.writeHead(500);
-      res.end("Error loading Index.html");
+      res.writeHead(404);
+      res.end("File not found");
       return;
     }
 
-    res.writeHead(200, { "Content-Type": "text/html" });
+    res.writeHead(200, { "Content-Type": contentType });
     res.end(data);
   });
 });
