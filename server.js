@@ -2,8 +2,15 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
+const routes = {
+  "/": "./Index.html",
+  "/about": "./About.html",
+  "/projects": "./Projects.html",
+  "/contact": "./Contact.html",
+};
+
 const server = http.createServer((req, res) => {
-  let filePath = req.url === "/" ? "./Index.html" : "." + req.url;
+  let filePath = routes[req.url] || "." + req.url;
 
   const extension = path.extname(filePath);
 
